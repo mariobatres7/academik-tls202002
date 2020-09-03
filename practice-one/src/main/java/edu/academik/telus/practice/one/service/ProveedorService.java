@@ -13,7 +13,7 @@ public class ProveedorService {
     public static List<Proveedor> proveedorList = new ArrayList<>();
 
     public static boolean agregarProveedor(Proveedor proveedor) {
-
+        
         boolean existe = proveedorList.stream().anyMatch(p -> p.equals(proveedor));
 
         if (!existe) {
@@ -25,7 +25,18 @@ public class ProveedorService {
     }
 
     public static Proveedor buscarProveedor(String codigo) {
-        return proveedorList.stream().filter(p -> p.getCodigo().equalsIgnoreCase(codigo)).findFirst().orElse(null);
+        /*
+        for (Proveedor p : proveedorList){
+            if (p.getCodigo().equalsIgnoreCase(codigo)){
+                return p;
+            }
+        }
+        return null;*/
+        
+        return proveedorList.stream()
+                .filter(p -> p.getCodigo().equalsIgnoreCase(codigo))
+                .findFirst()
+                .orElse(null);
     }
 
 }

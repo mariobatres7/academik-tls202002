@@ -13,7 +13,6 @@
 
 
         <table>
-
             <thead>
                 <tr>
                     <th>Código</th>
@@ -28,7 +27,7 @@
                         <td>${proveedor.codigo}</td> 
                         <td>${proveedor.nombreComercial}</td> 
                         <td>${proveedor.direccion}</td> 
-                        <td><a href="proveedor/${proveedor.codigo}">Modificar</a></td> 
+                        <td><a href="proveedor/codigo/${proveedor.codigo}">Modificar</a></td> 
                         <td><a href="proveedor/eliminar/${proveedor.codigo}">Eliminar</a></td> 
                     </tr>
 

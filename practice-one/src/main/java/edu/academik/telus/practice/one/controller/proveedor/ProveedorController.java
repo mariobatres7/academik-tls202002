@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 
 /**
  *
@@ -27,8 +26,6 @@ public class ProveedorController {
 
     @GetMapping("/proveedor/codigo/{codigo}")
     public String getByCodigo(Model model, @PathVariable("codigo") String codigo) {
-
-        System.out.println("Hannah is here" + codigo);
         
         var proveedor = ProveedorService.buscarProveedor(codigo);
         
@@ -38,7 +35,7 @@ public class ProveedorController {
     }
 
     @PostMapping("/proveedor/crear")
-    public String post(Model model, @ModelAttribute("proveedor") Proveedor proveedor) {
+    public String create(Model model, @ModelAttribute("proveedor") Proveedor proveedor) {
 
         boolean agregado = ProveedorService.agregarProveedor(proveedor);
 
@@ -55,18 +52,10 @@ public class ProveedorController {
     
     
     @PostMapping("/proveedor/editar")
-    public String put(Model model, @ModelAttribute("proveedor") Proveedor proveedor) {
+    public String edit(Model model, @ModelAttribute("proveedor") Proveedor proveedor) {
 
-        boolean agregado = ProveedorService.agregarProveedor(proveedor);
-
-        if (agregado) {
-            model.addAttribute("proveedor", new Proveedor());
-            model.addAttribute("mensaje", "Proveedor agregado satisfactoriamente");
-        } else {
-            model.addAttribute("mensaje", "¡¡Proveedor ya existe!!");
-        }
-
-        return "proveedor/crear-proveedor";
+       
+        return "proveedor/editar-proveedor";
     }
 
 }

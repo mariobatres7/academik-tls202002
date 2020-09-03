@@ -61,7 +61,7 @@ public class Proveedor {
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 11 * hash + Objects.hashCode(this.codigo);
+        hash = 79 * hash + Objects.hashCode(this.codigo);
         return hash;
     }
 

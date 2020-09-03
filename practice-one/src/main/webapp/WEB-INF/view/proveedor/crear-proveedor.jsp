@@ -18,10 +18,11 @@
 
         <span>${mensaje}</span>
 
+
         <form:form method="post" 
-                   action="#" 
+                   action="proveedor/crear" 
                    modelAttribute="proveedor">
-            
+
             <form:label path="codigo">Código:</form:label> 
             <form:input path="codigo"  />
             <br/>
