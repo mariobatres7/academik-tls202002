@@ -18,26 +18,30 @@
 
         <span>${mensaje}</span>
 
-
+        
         <form:form method="post" 
-                   action="proveedor/crear" 
+                   action="${pageContext.servletContext.contextPath}/proveedor/crear" 
                    modelAttribute="proveedor">
 
-            <form:label path="codigo">Código:</form:label> 
-            <form:input path="codigo"  />
+            <form:label path="codigo" >Código:</form:label> 
+            <form:input path="codigo"   />
+            <form:errors path="codigo"  />
             <br/>
 
             <form:label path="nombreComercial">Nombre Comercial:</form:label> 
             <form:input path="nombreComercial" />
+            <form:errors path="nombreComercial"  />
             <br/>
 
             <form:label path="direccion">Dirección:</form:label> 
             <form:textarea path="direccion" />
+            <form:errors path="direccion"  />
             <br/>
 
 
             <form:label path="email">Correo Electrónico:</form:label> 
             <form:input path="email" />
+            <form:errors path="email" />
             <br/>
 
             <form:button class="">Enviar</form:button>

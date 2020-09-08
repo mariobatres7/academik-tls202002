@@ -1,6 +1,10 @@
 package edu.academik.telus.practice.one.model;
 
 import java.util.Objects;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  *
@@ -8,12 +12,20 @@ import java.util.Objects;
  */
 public class Proveedor {
 
+    @NotEmpty(message = "Código está vacío.")
+    @NotNull(message = "Código es nulo.")
     private String codigo;
 
+    @NotEmpty(message = "Nombre comercial está vacío.")
+    @NotNull(message = "Nombre comercial es nulo.")
     private String nombreComercial;
 
+    @Size(max = 2000, message = "Dirección excede de 2,000 carácteres")
     private String direccion;
 
+    @NotEmpty(message = "Correo electrónico está vacío.")
+    @NotNull(message = "Correo electrónico es nulo.")
+    @Email(message = "Correo electrónico no es válido.")
     private String email;
 
     private boolean eliminado;

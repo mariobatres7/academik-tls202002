@@ -2,8 +2,10 @@ package edu.academik.telus.practice.one.controller.proveedor;
 
 import edu.academik.telus.practice.one.model.Proveedor;
 import edu.academik.telus.practice.one.service.ProveedorService;
+import javax.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,7 +20,7 @@ public class ProveedorController {
 
     @GetMapping("/proveedor")
     public String get(Model model) {
-        
+
         model.addAttribute("proveedor", new Proveedor());
 
         return "proveedor/crear-proveedor";
@@ -26,35 +28,38 @@ public class ProveedorController {
 
     @GetMapping("/proveedor/codigo/{codigo}")
     public String getByCodigo(Model model, @PathVariable("codigo") String codigo) {
-        
+
         var proveedor = ProveedorService.buscarProveedor(codigo);
-        
+
         model.addAttribute("proveedor", proveedor);
 
         return "proveedor/editar-proveedor";
     }
 
     @PostMapping("/proveedor/crear")
-    public String create(Model model, @ModelAttribute("proveedor") Proveedor proveedor) {
+    public String create(
+            Model model,
+            @Valid @ModelAttribute("proveedor") Proveedor proveedor,
+            BindingResult bindingResult
+    ) {
+        if (!bindingResult.hasErrors()) {
 
-        boolean agregado = ProveedorService.agregarProveedor(proveedor);
+            boolean agregado = ProveedorService.agregarProveedor(proveedor);
 
-        if (agregado) {
-            model.addAttribute("proveedor", new Proveedor());
-            model.addAttribute("mensaje", "Proveedor agregado satisfactoriamente");
-        } else {
-            model.addAttribute("mensaje", "¡¡Proveedor ya existe!!");
+            if (agregado) {
+                model.addAttribute("proveedor", new Proveedor());
+                model.addAttribute("mensaje", "Proveedor agregado satisfactoriamente");
+            } else {
+                model.addAttribute("mensaje", "¡¡Proveedor ya existe!!");
+            }
         }
 
         return "proveedor/crear-proveedor";
     }
-    
-    
-    
+
     @PostMapping("/proveedor/editar")
     public String edit(Model model, @ModelAttribute("proveedor") Proveedor proveedor) {
 
-       
         return "proveedor/editar-proveedor";
     }
 
