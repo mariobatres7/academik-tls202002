@@ -9,7 +9,7 @@
     <body>
         <h1>Listado de Proveedores</h1>
 
-        <a href="proveedor">Crear Proveedores</a>
+        <a href="${pageContext.servletContext.contextPath}/proveedor">Crear Proveedores</a>
 
 
         <table>
