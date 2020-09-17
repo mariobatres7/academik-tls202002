@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -34,11 +36,28 @@ public class Main {
 
                     System.out.println();
                 }
-
             }
-
         }
+    }
 
+    private static void ejecutarQuery2(Connection conn) throws SQLException {
+
+        String queryString = "select tipo, count(*) total from cliente group by tipo order by 1";
+
+        // try with resource ---> el va  a cerrar el stmt
+        try (PreparedStatement stmt = conn.prepareStatement(queryString)) {
+
+            try (ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    int tipo = rs.getInt("tipo");
+
+                    int total = rs.getInt("total");
+
+                    System.out.println("tipo = " + tipo + ", total = " + total);
+                }
+            }
+        }
     }
 
     public static void main(String[] args) {
@@ -51,13 +70,15 @@ public class Main {
 
             System.out.println("Base de datos conectada!!!");
 
-            ejecutarQuery1(conn);
+            //ejecutarQuery1(conn);
+            ejecutarQuery2(conn);
 
             conn.close();
 
         } catch (SQLException ex) {
 
-            System.err.println(ex.getMessage());
+            //esto en lugar de ex.printStackTrace()
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, "Error", ex);
 
             if (conn != null) {
                 try {
