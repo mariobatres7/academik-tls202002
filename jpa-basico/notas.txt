@@ -1,0 +1,7 @@
+
+* Mapeo de una llave compuesta
+
+* Resolución del Problema de N+1.
+
+* Consultas de diferentes formas.
+

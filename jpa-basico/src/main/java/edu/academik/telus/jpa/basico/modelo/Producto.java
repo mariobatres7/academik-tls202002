@@ -2,13 +2,18 @@ package edu.academik.telus.jpa.basico.modelo;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  * +---------------+---------------+------+-----+---------+----------------+ |
@@ -40,8 +45,21 @@ public class Producto implements Serializable {
     @Column(name = "codigo_barras")
     private String codigoBarras;
 
+    @Column(name = "nombre")
+    private String nombre;
+
     @Column(name = "precio")
     private BigDecimal precio;
+
+    @ManyToMany(mappedBy = "productoSet")
+    private Set<Cliente> clienteSet;
+
+    @OneToMany(mappedBy = "producto")
+    private List<FacturaDetalle> facturaDetalleList;
+
+    //para aquellos campos que no están definidos en nuestra tabla
+    @Transient
+    private boolean valido;
 
     public Integer getProductoId() {
         return productoId;
@@ -67,12 +85,44 @@ public class Producto implements Serializable {
         this.codigoBarras = codigoBarras;
     }
 
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
     public BigDecimal getPrecio() {
         return precio;
     }
 
     public void setPrecio(BigDecimal precio) {
         this.precio = precio;
+    }
+
+    public Set<Cliente> getClienteSet() {
+        return clienteSet;
+    }
+
+    public void setClienteSet(Set<Cliente> clienteSet) {
+        this.clienteSet = clienteSet;
+    }
+
+    public List<FacturaDetalle> getFacturaDetalleList() {
+        return facturaDetalleList;
+    }
+
+    public void setFacturaDetalleList(List<FacturaDetalle> facturaDetalleList) {
+        this.facturaDetalleList = facturaDetalleList;
+    }
+
+    public boolean isValido() {
+        return valido;
+    }
+
+    public void setValido(boolean valido) {
+        this.valido = valido;
     }
 
     @Override
