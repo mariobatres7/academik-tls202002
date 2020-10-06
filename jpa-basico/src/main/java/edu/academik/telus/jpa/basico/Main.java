@@ -1,17 +1,25 @@
 package edu.academik.telus.jpa.basico;
 
+import edu.academik.telus.jpa.basico.modelo.Cliente;
 import edu.academik.telus.jpa.basico.modelo.Factura;
+import edu.academik.telus.jpa.basico.modelo.Membresia;
 import edu.academik.telus.jpa.basico.modelo.Producto;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
 import javax.persistence.Tuple;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Fetch;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Root;
 
 /**
@@ -170,8 +178,8 @@ public class Main {
             entityManager.getTransaction().rollback();
         }
     }
-    
-     public static void ejecutarRemove(EntityManager entityManager) {
+
+    public static void ejecutarRemove(EntityManager entityManager) {
 
         Producto producto = entityManager.find(Producto.class, 1);
 
@@ -187,8 +195,6 @@ public class Main {
             entityManager.getTransaction().rollback();
         }
     }
-    
-    
 
     public static void ejecutarTransaccion(EntityManager entityManager) {
 
@@ -216,6 +222,110 @@ public class Main {
         }
     }
 
+    public static void crearClienteYFactura(EntityManager entityManager) {
+
+        EntityTransaction entityTransaction = entityManager.getTransaction();
+
+        try {
+            entityTransaction.begin();
+            Cliente cliente = new Cliente();
+            cliente.setDireccion("Dirección Guatemala");
+            cliente.setNit("1231023123");
+            cliente.setNombre("Pedro Perez");
+
+            entityManager.persist(cliente);
+
+            Factura factura = new Factura();
+            factura.setCliente(cliente);
+            factura.setFecha(LocalDateTime.now());
+            factura.setNumero("00001");
+
+            entityManager.persist(factura);
+
+            entityTransaction.commit();
+        } catch (Exception ex) {
+            entityTransaction.rollback();
+            System.err.println(ex.getMessage());
+        }
+    }
+
+    public static void consultarFactura(EntityManager entityManager) {
+
+        Factura factura = entityManager.find(Factura.class, 1);
+
+        //por alguna validación
+        System.out.println(factura);
+
+        Cliente cliente = factura.getCliente();
+
+        System.out.println(cliente);
+    }
+
+    public static void consultarFactura2(EntityManager entityManager) {
+
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+
+        CriteriaQuery<Factura> facturaQuery = builder.createQuery(Factura.class);
+
+        Root<Factura> facturaRoot = facturaQuery.from(Factura.class);
+
+        Join<Factura, Cliente> facturaFetch = (Join) facturaRoot.fetch("cliente");
+
+        facturaQuery.where(
+                builder.equal(facturaRoot.get("facturaId"), 1),
+                builder.equal(facturaFetch.get("nit"), "")
+        );
+
+        Factura factura = entityManager.createQuery(facturaQuery).getSingleResult();
+
+        //por alguna validación
+        System.out.println(factura);
+
+        Cliente cliente = factura.getCliente();
+
+        System.out.println(cliente);
+    }
+
+    public static void hacerJoin(EntityManager entityManager) {
+
+        /*
+            select 
+                f.numero
+                , c.nombre
+                , f.fecha
+            from factura f 
+            inner join cliente c on c.cliente_id = f.cliente_id
+            where c.cliente_id = 1
+                and f.fecha between ? and ?
+         */
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+
+        CriteriaQuery<Tuple> facturaQuery = builder.createQuery(Tuple.class);
+
+        Root<Factura> facturaRoot = facturaQuery.from(Factura.class);
+
+        Join<Factura, Cliente> clienteJoin = facturaRoot.join("cliente");
+
+        Join<Cliente, Membresia> membresiaJoin = clienteJoin.join("membresia", JoinType.LEFT);
+
+        facturaQuery.multiselect(
+                facturaRoot.get("numero"),
+                clienteJoin.get("nombre"),
+                facturaRoot.get("fecha")
+        );
+
+        facturaQuery.where(
+                builder.equal(clienteJoin.get("clienteId"), 1),
+                builder.between(facturaRoot.get("fecha").as(LocalDate.class), LocalDate.now(), LocalDate.now().plusDays(10)),
+                builder.equal(builder.coalesce(membresiaJoin.get("codigo"), "123"), "123")
+        ); // coalesce == nvl en Oracle
+
+        List<Tuple> tupleList = entityManager.createQuery(facturaQuery).getResultList();
+
+        tupleList.stream().forEach(System.out::println);
+
+    }
+
     public static void main(String[] args) {
 
         EntityManager entityManager = Persistence.createEntityManagerFactory("MYSQL_PU")
@@ -224,7 +334,11 @@ public class Main {
         //ejectuarCriteria2(entityManager, 30000);
         //ejecutarCriteria6(entityManager);
         //ejecutarCriteria5(entityManager);
-        ejecutarRemove(entityManager);
+        //ejecutarRemove(entityManager);
+        //crearClienteYFactura(entityManager);
+        //consultarFactura(entityManager);
+        //hacerJoin(entityManager);
+        consultarFactura2(entityManager);
 
         entityManager.close();
     }

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -38,7 +39,10 @@ public class Factura implements Serializable {
     @Column(name = "fecha") // Este mapeo es valído si utilizamos JVM >= 8
     private LocalDateTime fecha;
 
-    @ManyToOne
+    @Column(name = "cliente_id", insertable = false, updatable = false)
+    private Integer clienteId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cliente_id", referencedColumnName = "cliente_id")
     private Cliente cliente;
 
@@ -85,6 +89,14 @@ public class Factura implements Serializable {
         this.facturaDetalleList = facturaDetalleList;
     }
 
+    public Integer getClienteId() {
+        return clienteId;
+    }
+
+    public void setClienteId(Integer clienteId) {
+        this.clienteId = clienteId;
+    }
+
     @Override
     public int hashCode() {
         int hash = 7;
@@ -105,6 +117,12 @@ public class Factura implements Serializable {
         }
         final Factura other = (Factura) obj;
         return Objects.equals(this.facturaId, other.facturaId);
+    }
+
+    @Override
+    public String toString() {
+        /// NUNCA PONGAMOS ATRIBUTOS MANY TO MANY, ONE TO MANY, MANY TO ONE, ONE TO ONE
+        return "Factura(" + this.facturaId + ")";
     }
 
 }

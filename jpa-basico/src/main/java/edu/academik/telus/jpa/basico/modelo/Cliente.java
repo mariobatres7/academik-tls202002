@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -50,8 +51,8 @@ public class Cliente implements Serializable {
     private List<Factura> facturaList;
 
     
-    @OneToOne(mappedBy = "cliente")
-    private Membresia membresia;
+    //@OneToOne(mappedBy = "cliente", fetch = FetchType.LAZY)
+    //private Membresia membresia;
     
     public Integer getClienteId() {
         return clienteId;
@@ -101,13 +102,13 @@ public class Cliente implements Serializable {
         this.facturaList = facturaList;
     }
 
-    public Membresia getMembresia() {
+   /* public Membresia getMembresia() {
         return membresia;
     }
 
     public void setMembresia(Membresia membresia) {
         this.membresia = membresia;
-    }
+    }*/
 
     @Override
     public int hashCode() {
