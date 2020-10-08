@@ -14,6 +14,9 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.SelectBeforeUpdate;
 
 /**
  * +---------------+---------------+------+-----+---------+----------------+ |
@@ -32,6 +35,9 @@ import javax.persistence.Transient;
  */
 @Entity
 @Table(name = "producto")
+@SelectBeforeUpdate
+@DynamicUpdate
+@DynamicInsert
 public class Producto implements Serializable {
 
     @Id // que nuestra llave primera está definida como un solo campo

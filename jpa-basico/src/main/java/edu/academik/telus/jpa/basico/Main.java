@@ -2,6 +2,7 @@ package edu.academik.telus.jpa.basico;
 
 import edu.academik.telus.jpa.basico.modelo.Cliente;
 import edu.academik.telus.jpa.basico.modelo.Factura;
+import edu.academik.telus.jpa.basico.modelo.FacturaDetalle;
 import edu.academik.telus.jpa.basico.modelo.Membresia;
 import edu.academik.telus.jpa.basico.modelo.Producto;
 import java.math.BigDecimal;
@@ -17,10 +18,10 @@ import javax.persistence.Persistence;
 import javax.persistence.Tuple;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Fetch;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
 
 /**
  *
@@ -326,6 +327,211 @@ public class Main {
 
     }
 
+    public static void ejecutarGroupBy(EntityManager entityManager) {
+
+        /**
+         * select cliente_id , count(factura_id) total from factura group by
+         * cliente_id
+         */
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+
+        CriteriaQuery<Tuple> query = builder.createTupleQuery();
+
+        Root<Factura> root = query.from(Factura.class);
+
+        query.multiselect(
+                root.get("clienteId").alias("clienteId"),
+                builder.count(root.get("facturaId")).alias("total")
+        );
+
+        query.groupBy(root.get("clienteId"));
+
+        List<Tuple> resultList = entityManager.createQuery(query).getResultList();
+
+        resultList.stream().forEach(tuple -> {
+
+            System.out.println(tuple.get("clienteId") + "  " + tuple.get("total"));
+        });
+    }
+
+    public static void ejecutarExists(EntityManager entityManager) {
+
+        /*
+        select * from producto p
+            where exists (
+                select 1 from factura_detalle fd 
+                where fd.producto_id = p.producto_id
+            )
+
+         */
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+
+        CriteriaQuery<Producto> productoQuery = builder.createQuery(Producto.class);
+
+        Root<Producto> productoRoot = productoQuery.from(Producto.class);
+
+        //------Subquery---------------------
+        Subquery facturaDetalleSubquery = builder.createQuery().subquery(Integer.class);
+
+        facturaDetalleSubquery.select(builder.literal(1));
+
+        Root<FacturaDetalle> facturaDetalleRoot = facturaDetalleSubquery.from(FacturaDetalle.class);
+
+        facturaDetalleSubquery.where(
+                builder.equal(facturaDetalleRoot.get("producto"), productoRoot.get("productoId"))
+        );
+        //-----------------------------------
+
+        productoQuery.where(builder.exists(facturaDetalleSubquery));
+
+        List<Producto> productoList = entityManager.createQuery(productoQuery).getResultList();
+
+        productoList.stream().forEach(System.out::println);
+
+    }
+
+    public static void ejecutarSubquery(EntityManager entityManager) {
+
+        /*
+      
+select 
+    p.*
+    , coalesce((select sum(fd.total) from factura_detalle fd  where fd.producto_id = p.producto_id), 0)
+from producto p
+
+         */
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+
+        CriteriaQuery<Tuple> productoQuery = builder.createQuery(Tuple.class);
+
+        Root<Producto> productoRoot = productoQuery.from(Producto.class);
+
+        //------Subquery---------------------
+        Subquery<BigDecimal> facturaDetalleSubquery = builder.createQuery().subquery(BigDecimal.class);
+
+        Root<FacturaDetalle> facturaDetalleRoot = facturaDetalleSubquery.from(FacturaDetalle.class);
+
+        facturaDetalleSubquery.select(
+                builder.sum(facturaDetalleRoot.get("total"))
+        );
+
+        facturaDetalleSubquery.where(
+                builder.equal(facturaDetalleRoot.get("producto"), productoRoot.get("productoId"))
+        );
+        //-----------------------------------
+
+        productoQuery.multiselect(
+                productoRoot.get("productoId"),
+                builder.coalesce(facturaDetalleSubquery.getSelection(), BigDecimal.ZERO)
+        );
+
+        List<Tuple> productoList = entityManager.createQuery(productoQuery).getResultList();
+
+        productoList.stream().forEach(tuple -> {
+
+            System.out.println(tuple.get(0) + "  " + tuple.get(1));
+        });
+
+    }
+
+    public static void ejecutarSubquery2(EntityManager entityManager) {
+        /*
+select 
+    p.*
+    , coalesce((select sum(fd.total) from factura_detalle fd  where fd.producto_id = p.producto_id), 0)
+from producto p
+
+         */
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+
+        CriteriaQuery<Tuple> productoQuery = builder.createQuery(Tuple.class);
+
+        Root<Producto> productoRoot = productoQuery.from(Producto.class);
+
+        //------Subquery---------------------
+        Subquery<BigDecimal> facturaDetalleSubquery = builder.createQuery().subquery(BigDecimal.class);
+
+        Root<FacturaDetalle> facturaDetalleRoot = facturaDetalleSubquery.from(FacturaDetalle.class);
+
+        facturaDetalleSubquery.select(
+                builder.sum(facturaDetalleRoot.get("total"))
+        );
+
+        facturaDetalleSubquery.where(
+                builder.equal(facturaDetalleRoot.get("producto"), productoRoot.get("productoId"))
+        );
+        //-----------------------------------
+
+        productoQuery.multiselect(
+                productoRoot.alias("producto"),
+                builder.coalesce(facturaDetalleSubquery.getSelection(), BigDecimal.ZERO).alias("total")
+        );
+
+        List<Tuple> productoList = entityManager.createQuery(productoQuery).getResultList();
+
+        productoList.stream().forEach(tuple -> {
+
+            Producto producto = tuple.get("producto", Producto.class);
+
+            BigDecimal total = tuple.get("total", BigDecimal.class);
+
+            System.out.println("producto:  " + producto);
+            System.out.println("total:  " + total);
+        });
+
+    }
+
+    public static void ejecutarNativo(EntityManager entityManager) {
+
+        String sqlString = "select \n"
+                + "    i1.producto_id\n"
+                + "    , p.nombre\n"
+                + "    , i1.total\n"
+                + "from (\n"
+                + "    select \n"
+                + "        fd.producto_id,\n"
+                + "        sum(fd.total) as total\n"
+                + "    from factura_detalle fd \n"
+                + "    group by fd.producto_id\n"
+                + ") as i1\n"
+                + "inner join producto p on p.producto_id = i1.producto_id \n"
+                + "where i1.producto_id = :productoId";
+
+        List<Object[]> resultList = entityManager
+                .createNativeQuery(sqlString)
+                .setParameter("productoId", 2)
+                .getResultList();
+
+        resultList.stream().forEach(array -> {
+            for (Object obj : array) {
+                System.out.print(obj + "\t");
+            }
+
+            System.out.println();
+        });
+
+    }
+
+    public static void ejecutarMerge2(EntityManager entityManager, Integer productoId, BigDecimal precio) {
+
+        Producto producto = entityManager.find(Producto.class, productoId);
+
+        producto.setPrecio(precio);
+
+        try {
+            entityManager.getTransaction().begin();
+
+            //update
+            entityManager.merge(producto);
+
+            entityManager.getTransaction().commit();
+
+        } catch (Exception ex) {
+            System.err.println(ex.getMessage());
+            entityManager.getTransaction().rollback();
+        }
+    }
+
     public static void main(String[] args) {
 
         EntityManager entityManager = Persistence.createEntityManagerFactory("MYSQL_PU")
@@ -338,7 +544,10 @@ public class Main {
         //crearClienteYFactura(entityManager);
         //consultarFactura(entityManager);
         //hacerJoin(entityManager);
-        consultarFactura2(entityManager);
+        //consultarFactura2(entityManager);
+        //ejecutarGroupBy(entityManager);
+        //ejecutarNativo(entityManager);
+        ejecutarMerge2(entityManager, 2, BigDecimal.valueOf(52.12));
 
         entityManager.close();
     }
