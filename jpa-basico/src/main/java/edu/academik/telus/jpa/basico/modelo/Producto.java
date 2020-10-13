@@ -12,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.PostLoad;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import org.hibernate.annotations.DynamicInsert;
@@ -69,6 +70,18 @@ public class Producto implements Serializable {
     //para aquellos campos que no están definidos en nuestra tabla
     @Transient
     private boolean valido;
+
+    @Transient
+    private String codigoNombre;
+
+    @PostLoad
+    protected void postLoad() {
+        this.codigoNombre = this.codigo + " " + this.nombre;
+    }
+
+    public String getCodigoNombre() {
+        return this.codigoNombre;
+    }
 
     public Integer getProductoId() {
         return productoId;

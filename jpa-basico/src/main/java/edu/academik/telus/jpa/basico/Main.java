@@ -583,8 +583,30 @@ from producto p
         //ejecutarNativo(entityManager);
         //ejecutarMerge2(entityManager, 2, BigDecimal.valueOf(52.12));
         //crearYAsociarMedida(entityManager);
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+
+        CriteriaQuery<Producto> query = builder.createQuery(Producto.class); //select 
+
+        query.from(Producto.class); // from productos
+
+        List<Producto> productoList = entityManager.createQuery(query).getResultList();
+
+        productoList.stream().forEach(System.out::println);
         
-        ProductoMedidaPK pk = new ProductoMedidaPK();
+        
+        productoList.stream().forEach(producto -> {
+            boolean valido = producto.getProductoId() % 2 == 0;
+            producto.setValido(valido);
+        });
+        
+        productoList.stream()
+                .filter(producto -> producto.isValido())
+                .forEach(producto -> {
+                    System.out.println(producto.getCodigoNombre());
+                
+                });
+        
+        /* ProductoMedidaPK pk = new ProductoMedidaPK();
         pk.setProductoId(2);
         pk.setMedidaId(1);
 
@@ -596,8 +618,7 @@ from producto p
         
         producto.getProductoMedidaList().stream().forEach(productoMedida -> {
             System.out.println(productoMedida);
-        });*/
-        entityManager.close();
+        });*/ entityManager.close();
     }
 
 }
