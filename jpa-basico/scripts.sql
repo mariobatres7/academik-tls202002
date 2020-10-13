@@ -26,8 +26,6 @@ cliente_producto_pk
 primary key (cliente_id, producto_id);
 
 
-
-
 alter table cliente_producto add constraint 
 cliente_producto_fk1 foreign key (cliente_id) references cliente(cliente_id);
 
@@ -79,6 +77,31 @@ mebresia_fk1 foreign key (cliente_id)
 references cliente(cliente_id);
 
 create unique index membresia_uk on membresia(cliente_id);
+
+
+
+
+create table medida (
+	medida_id integer not null primary key auto_increment,
+	descripcion varchar(100) not null
+);
+
+
+create table producto_medida(
+	producto_id integer not null,
+	medida_id integer not null,
+	existencia decimal 	
+);
+
+
+alter table producto_medida add constraint producto_medida_pk primary key (producto_id, medida_id);
+
+
+alter table producto_medida add constraint producto_medida_fk1 foreign key (producto_id) references producto (producto_id);
+
+alter table producto_medida add constraint producto_medida_fk2 foreign key (medida_id) references medida (medida_id);
+
+
 
 
 

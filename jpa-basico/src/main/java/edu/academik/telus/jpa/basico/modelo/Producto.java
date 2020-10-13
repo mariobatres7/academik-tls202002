@@ -63,6 +63,9 @@ public class Producto implements Serializable {
     @OneToMany(mappedBy = "producto")
     private List<FacturaDetalle> facturaDetalleList;
 
+    @OneToMany(mappedBy = "producto")
+    private List<ProductoMedida> productoMedidaList;
+
     //para aquellos campos que no están definidos en nuestra tabla
     @Transient
     private boolean valido;
@@ -129,6 +132,14 @@ public class Producto implements Serializable {
 
     public void setValido(boolean valido) {
         this.valido = valido;
+    }
+
+    public List<ProductoMedida> getProductoMedidaList() {
+        return productoMedidaList;
+    }
+
+    public void setProductoMedidaList(List<ProductoMedida> productoMedidaList) {
+        this.productoMedidaList = productoMedidaList;
     }
 
     @Override

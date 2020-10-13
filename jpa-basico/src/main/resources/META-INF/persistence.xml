@@ -9,11 +9,13 @@
         <class>edu.academik.telus.jpa.basico.modelo.Factura</class>
         <class>edu.academik.telus.jpa.basico.modelo.FacturaDetalle</class>
         <class>edu.academik.telus.jpa.basico.modelo.Membresia</class>
+        <class>edu.academik.telus.jpa.basico.modelo.Medida</class>
+        <class>edu.academik.telus.jpa.basico.modelo.ProductoMedida</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>
             <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/telus2"/>
             <property name="javax.persistence.jdbc.user" value="root"/>
-            <property name="javax.persistence.jdbc.password" value="felicia" />
+            <property name="javax.persistence.jdbc.password" value="felicia"/>
             <property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.format_sql" value="true"/>
         </properties>

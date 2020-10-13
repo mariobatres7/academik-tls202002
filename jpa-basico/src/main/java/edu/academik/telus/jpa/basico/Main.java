@@ -3,8 +3,11 @@ package edu.academik.telus.jpa.basico;
 import edu.academik.telus.jpa.basico.modelo.Cliente;
 import edu.academik.telus.jpa.basico.modelo.Factura;
 import edu.academik.telus.jpa.basico.modelo.FacturaDetalle;
+import edu.academik.telus.jpa.basico.modelo.Medida;
 import edu.academik.telus.jpa.basico.modelo.Membresia;
 import edu.academik.telus.jpa.basico.modelo.Producto;
+import edu.academik.telus.jpa.basico.modelo.ProductoMedida;
+import edu.academik.telus.jpa.basico.modelo.ProductoMedidaPK;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -532,6 +535,37 @@ from producto p
         }
     }
 
+    public static void crearYAsociarMedida(EntityManager entityManager) {
+
+        entityManager.getTransaction().begin();
+        try {
+
+            Medida medida = new Medida();
+            medida.setDescripcion("Mi Nueva Medida con Embedded");
+
+            entityManager.persist(medida);
+
+            ProductoMedidaPK pk = new ProductoMedidaPK();
+            pk.setMedidaId(medida.getMedidaId());
+            pk.setProductoId(2);
+
+            ProductoMedida productoMedida = new ProductoMedida();
+            productoMedida.setExistencia(BigDecimal.TEN);
+            productoMedida.setPk(pk);
+
+            /*
+            productoMedida.setMedidaId(medida.getMedidaId());
+            productoMedida.setProductoId(2);*/
+            entityManager.persist(productoMedida);
+
+            entityManager.getTransaction().commit();
+        } catch (Exception ex) {
+            System.err.println(ex.getMessage());
+            entityManager.getTransaction().rollback();
+        }
+
+    }
+
     public static void main(String[] args) {
 
         EntityManager entityManager = Persistence.createEntityManagerFactory("MYSQL_PU")
@@ -547,8 +581,22 @@ from producto p
         //consultarFactura2(entityManager);
         //ejecutarGroupBy(entityManager);
         //ejecutarNativo(entityManager);
-        ejecutarMerge2(entityManager, 2, BigDecimal.valueOf(52.12));
+        //ejecutarMerge2(entityManager, 2, BigDecimal.valueOf(52.12));
+        //crearYAsociarMedida(entityManager);
+        
+        ProductoMedidaPK pk = new ProductoMedidaPK();
+        pk.setProductoId(2);
+        pk.setMedidaId(1);
 
+        ProductoMedida productoMedida = entityManager.find(ProductoMedida.class, pk);
+        System.out.println(productoMedida);
+
+        /*
+        Producto producto = entityManager.find(Producto.class, 2);
+        
+        producto.getProductoMedidaList().stream().forEach(productoMedida -> {
+            System.out.println(productoMedida);
+        });*/
         entityManager.close();
     }
 
