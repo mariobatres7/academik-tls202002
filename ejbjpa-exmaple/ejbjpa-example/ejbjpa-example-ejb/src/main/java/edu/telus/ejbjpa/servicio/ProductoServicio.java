@@ -31,7 +31,24 @@ public class ProductoServicio {
         return productoList;
     }
 
-    public void crearProducto(Producto producto) {
+    public Producto findProductoById(Integer productoId) {
+        return this.entityManager.find(Producto.class, productoId);
+    }
+
+    public void createProducto(Producto producto) {
         this.entityManager.persist(producto);
     }
+
+    public void editProducto(Producto producto) {
+        this.entityManager.merge(producto);
+    }
+
+    public void deleteProducto(Integer productoId) {
+        Producto producto = this.entityManager.find(Producto.class, productoId);
+
+        if (producto != null) {
+            this.entityManager.remove(producto);
+        }
+    }
+
 }
