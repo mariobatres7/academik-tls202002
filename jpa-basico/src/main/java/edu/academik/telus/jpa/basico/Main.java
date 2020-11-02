@@ -1,13 +1,16 @@
 package edu.academik.telus.jpa.basico;
 
 import edu.academik.telus.jpa.basico.modelo.Cliente;
+import edu.academik.telus.jpa.basico.modelo.Cliente_;
 import edu.academik.telus.jpa.basico.modelo.Factura;
 import edu.academik.telus.jpa.basico.modelo.FacturaDetalle;
+import edu.academik.telus.jpa.basico.modelo.FacturaDetalle_;
 import edu.academik.telus.jpa.basico.modelo.Medida;
 import edu.academik.telus.jpa.basico.modelo.Membresia;
 import edu.academik.telus.jpa.basico.modelo.Producto;
 import edu.academik.telus.jpa.basico.modelo.ProductoMedida;
 import edu.academik.telus.jpa.basico.modelo.ProductoMedidaPK;
+import edu.academik.telus.jpa.basico.modelo.Producto_;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -566,6 +569,29 @@ from producto p
 
     }
 
+    public static void consultarManyToMany(EntityManager entityManager) {
+
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+
+        CriteriaQuery<Tuple> query = builder.createTupleQuery();
+
+        Root<Cliente> clienteRoot = query.from(Cliente.class);
+
+        Join<Cliente, Producto> productoJoin = clienteRoot.join(Cliente_.productoSet);
+
+        query.multiselect(
+                clienteRoot.get(Cliente_.clienteId),
+                builder.count(productoJoin.get(Producto_.productoId))
+        );
+
+        query.groupBy(clienteRoot.get(Cliente_.clienteId));
+
+        List<Tuple> resultList = entityManager.createQuery(query).getResultList();
+
+        resultList.stream().forEach(System.out::println);
+
+    }
+
     public static void main(String[] args) {
 
         EntityManager entityManager = Persistence.createEntityManagerFactory("MYSQL_PU")
@@ -583,6 +609,8 @@ from producto p
         //ejecutarNativo(entityManager);
         //ejecutarMerge2(entityManager, 2, BigDecimal.valueOf(52.12));
         //crearYAsociarMedida(entityManager);
+        /*
+        
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 
         CriteriaQuery<Producto> query = builder.createQuery(Producto.class); //select 
@@ -592,21 +620,20 @@ from producto p
         List<Producto> productoList = entityManager.createQuery(query).getResultList();
 
         productoList.stream().forEach(System.out::println);
-        
-        
+
         productoList.stream().forEach(producto -> {
             boolean valido = producto.getProductoId() % 2 == 0;
             producto.setValido(valido);
         });
-        
+
         productoList.stream()
                 .filter(producto -> producto.isValido())
                 .forEach(producto -> {
                     System.out.println(producto.getCodigoNombre());
-                
-                });
-        
-        /* ProductoMedidaPK pk = new ProductoMedidaPK();
+
+                }); */
+
+ /* ProductoMedidaPK pk = new ProductoMedidaPK();
         pk.setProductoId(2);
         pk.setMedidaId(1);
 
@@ -618,7 +645,44 @@ from producto p
         
         producto.getProductoMedidaList().stream().forEach(productoMedida -> {
             System.out.println(productoMedida);
-        });*/ entityManager.close();
+        });*/
+        //consultarManyToMany(entityManager);
+        ejecutarOpcion4Edson(entityManager);
+        
+        entityManager.close();
     }
 
+    public static void ejecutarOpcion4Edson(EntityManager entityManager) {
+
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+
+        CriteriaQuery<Tuple> query = builder.createTupleQuery();
+
+        Root<FacturaDetalle> root = query.from(FacturaDetalle.class);
+
+        try {
+
+            query.multiselect(
+                    root.get(FacturaDetalle_.factura).alias("facturaId"),
+                    builder.count(root.get(FacturaDetalle_.facturaDetalleId)).alias("total")
+            );
+            
+            query.groupBy(root.get(FacturaDetalle_.factura));
+
+            List<Tuple> lista = entityManager.createQuery(query).getResultList();
+
+            lista.stream().forEach(tuple -> {
+
+                Factura factura = tuple.get("facturaId", Factura.class);
+                
+                System.out.println(factura.getClienteId());
+                
+                System.out.println(tuple.get("facturaId") + " " + tuple.get("total"));
+            });
+
+        } catch (IllegalArgumentException iae) {
+            System.err.println(iae.getMessage());
+        }
+    }
 }
+

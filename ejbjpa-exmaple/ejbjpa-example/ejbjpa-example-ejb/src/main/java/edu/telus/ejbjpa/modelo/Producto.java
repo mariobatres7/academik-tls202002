@@ -16,6 +16,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.PostLoad;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlTransient;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.SelectBeforeUpdate;
@@ -59,7 +60,6 @@ public class Producto implements Serializable {
     @Column(name = "precio")
     private BigDecimal precio;
 
-    
     @JsonIgnore
     @ManyToMany(mappedBy = "productoSet")
     private Set<Cliente> clienteSet;
@@ -128,6 +128,7 @@ public class Producto implements Serializable {
         this.precio = precio;
     }
 
+    @XmlTransient
     public Set<Cliente> getClienteSet() {
         return clienteSet;
     }
@@ -136,6 +137,7 @@ public class Producto implements Serializable {
         this.clienteSet = clienteSet;
     }
 
+    @XmlTransient
     public List<FacturaDetalle> getFacturaDetalleList() {
         return facturaDetalleList;
     }
@@ -152,6 +154,7 @@ public class Producto implements Serializable {
         this.valido = valido;
     }
 
+    @XmlTransient
     public List<ProductoMedida> getProductoMedidaList() {
         return productoMedidaList;
     }

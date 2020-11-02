@@ -1,2 +1,13 @@
 /practice-one/target/
 /EJB101/target/
+/EJB-t101/EJB-t101-ejb/target/
+/EJB-t101/EJB-t101-web/target/
+/EJB-t101/EJB-t101-ear/target/
+/jdbc-basico/target/
+/jpa-basico/target/
+/springweb-mvc-101/target/
+/ejbjpa-exmaple/ejbjpa-example/ejbjpa-example-ear/target/
+/ejbjpa-exmaple/ejbjpa-example/ejbjpa-example-ejb/target/
+/ejbjpa-exmaple/ejbjpa-example/ejbjpa-example-web/target/
+/testejb/target/
+/producto-servicio-soap-client/target/

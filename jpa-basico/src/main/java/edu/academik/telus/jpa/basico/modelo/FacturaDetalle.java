@@ -23,7 +23,7 @@ public class FacturaDetalle implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "factura_detalle_id")
-    private Integer facturaId;
+    private Integer facturaDetalleId; 
 
     @Column(name = "cantidad")
     private Integer cantidad;
@@ -42,12 +42,12 @@ public class FacturaDetalle implements Serializable {
     @JoinColumn(name = "producto_id", referencedColumnName = "producto_id")
     private Producto producto;
 
-    public Integer getFacturaId() {
-        return facturaId;
+    public Integer getFacturaDetalleId() {
+        return facturaDetalleId;
     }
 
-    public void setFacturaId(Integer facturaId) {
-        this.facturaId = facturaId;
+    public void setFacturaId(Integer facturaDetalleId) {
+        this.facturaDetalleId = facturaDetalleId;
     }
 
     public Integer getCantidad() {
@@ -93,7 +93,7 @@ public class FacturaDetalle implements Serializable {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 73 * hash + Objects.hashCode(this.facturaId);
+        hash = 73 * hash + Objects.hashCode(this.facturaDetalleId);
         return hash;
     }
 
@@ -109,7 +109,7 @@ public class FacturaDetalle implements Serializable {
             return false;
         }
         final FacturaDetalle other = (FacturaDetalle) obj;
-        return Objects.equals(this.facturaId, other.facturaId);
+        return Objects.equals(this.facturaDetalleId, other.facturaDetalleId);
     }
     
     
