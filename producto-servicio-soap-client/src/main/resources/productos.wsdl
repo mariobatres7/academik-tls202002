@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='UTF-8'?><wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://soap.ejbjpa.telus.edu/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" name="ProductoServicioSOAP" targetNamespace="http://soap.ejbjpa.telus.edu/">
+    <wsdl:types>
+        <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://soap.ejbjpa.telus.edu/" elementFormDefault="unqualified" targetNamespace="http://soap.ejbjpa.telus.edu/" version="1.0">
+
+            <xs:element name="findProductos" type="tns:findProductos"/>
+
+            <xs:element name="findProductosResponse" type="tns:findProductosResponse"/>
+
+            <xs:complexType name="findProductos">
+                <xs:sequence/>
+            </xs:complexType>
+
+            <xs:complexType name="findProductosResponse">
+                <xs:sequence>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="productoResponse" type="tns:producto"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="producto">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="codigo" type="xs:string"/>
+                    <xs:element minOccurs="0" name="codigoBarras" type="xs:string"/>
+                    <xs:element minOccurs="0" name="nombre" type="xs:string"/>
+                    <xs:element minOccurs="0" name="precio" type="xs:decimal"/>
+                    <xs:element minOccurs="0" name="productoId" type="xs:int"/>
+                    <xs:element name="valido" type="xs:boolean"/>
+                </xs:sequence>
+            </xs:complexType>
+
+        </xs:schema>
+    </wsdl:types>
+    <wsdl:message name="findProductos">
+        <wsdl:part element="tns:findProductos" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="findProductosResponse">
+        <wsdl:part element="tns:findProductosResponse" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:portType name="ProductoSOAP">
+        <wsdl:operation name="findProductos">
+            <wsdl:input message="tns:findProductos" name="findProductos">
+            </wsdl:input>
+            <wsdl:output message="tns:findProductosResponse" name="findProductosResponse">
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="ProductoServicioSOAPSoapBinding" type="tns:ProductoSOAP">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="findProductos">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="findProductos">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="findProductosResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="ProductoServicioSOAP">
+        <wsdl:port binding="tns:ProductoServicioSOAPSoapBinding" name="ProductoSOAPPort">
+            <soap:address location="http://localhost:8080/ejbjpa-example-web/ProductoServicioSOAP"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>
