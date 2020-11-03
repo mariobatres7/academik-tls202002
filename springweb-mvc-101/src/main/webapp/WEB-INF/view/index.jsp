@@ -37,5 +37,12 @@
 
             <form:button class="btn btn-primary">Enviar</form:button>
         </form:form>
+
+        <h3>Listado de Productos</h3>
+        
+        <c:forEach items="${productList}" var="producto">
+            <span>${producto.nombre}</span>
+            </br>
+        </c:forEach>
     </body>
 </html>

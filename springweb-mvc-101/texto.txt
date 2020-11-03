@@ -1,0 +1,42 @@
+
+codigo = '100'
+codigoBarras = null
+nombre = 'Coca Cola'
+precio = null
+
+insert into producto (codigo, codigo_barras, nombre, precio) values ('100', null, 'Coca Cola', null);
+
+@DynamicInsert (Hibernate):
+
+insert into producto (codigo, nombre) values ('100', 'Coca Cola');
+
+@DynamicUpdate 
+
+productoId = 50
+codigo = '100'
+> codigoBarras = '1231923809182309182309182093'
+nombre = 'Coca Cola'
+precio = null
+
+Si no usamos la anotación:
+
+    update producto set 
+            codigo = '100'
+            , codigo_barras = '1231923809182309182309182093'
+            , nombre = 'Coca Cola'
+            , precio = null
+    where producto_id = 50
+;
+
+
+@SelectBeforeUpdate
+
+    select * from producto where producto_id = 50;
+
+    update producto set 
+            codigo_barras = '1231923809182309182309182093'
+    where producto_id = 50
+
+
+
+

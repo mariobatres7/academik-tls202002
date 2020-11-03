@@ -1,6 +1,8 @@
 package edu.academik.telus.springweb.mvc.controller;
 
+import edu.academik.telus.springweb.mvc.dao.ProductoDao;
 import edu.academik.telus.springweb.mvc.model.SignUp;
+import javax.annotation.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +16,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 public class IndexController {
 
+    @Resource
+    private ProductoDao productoDao;
+
     @GetMapping("/index")
     public String get(Model model) {
 
@@ -25,6 +30,10 @@ public class IndexController {
 
         model.addAttribute("message", "Bienvenido a Index");
         model.addAttribute("signUp", signUp);
+
+        var productList = this.productoDao.list();
+
+        model.addAttribute("productList", productList);
 
         return "index";
     }
