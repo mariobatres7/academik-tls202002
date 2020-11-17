@@ -2,6 +2,7 @@ package edu.academik.telus.decorator.rest;
 
 import edu.academik.telus.decorator.domain.Product;
 import edu.academik.telus.decorator.service.ProductService;
+import java.util.Map;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -27,8 +28,9 @@ public class ProductEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response sellProduct(Product product) {
-        this.productService.sellProduct(product);
-        return Response.ok(product).build();
+        String resultado = this.productService.sellProduct(product);
+        Map map = Map.of("resultado", resultado);
+        return Response.ok(map).build();
     }
 
 }
