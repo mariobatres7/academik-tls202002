@@ -11,3 +11,14 @@
 /ejbjpa-exmaple/ejbjpa-example/ejbjpa-example-web/target/
 /testejb/target/
 /producto-servicio-soap-client/target/
+/cdi-example/target/
+/RemoteEJB/account-receivable-remote/target/
+/RemoteEJB/account-receivable-service/target/
+/RemoteEJB/customer-service/target/
+/pattern-decorator/target/
+/decorator-service/target/
+/jpa-ejemplo2/target/
+/JMS-Example/target/
+/JavaMail-Example/target/
+/rest-recursivo/target/
+/JMXExample/target/

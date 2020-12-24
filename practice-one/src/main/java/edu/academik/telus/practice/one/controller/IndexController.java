@@ -1,6 +1,7 @@
 package edu.academik.telus.practice.one.controller;
 
 import edu.academik.telus.practice.one.service.ProveedorService;
+import javax.annotation.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,10 +13,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class IndexController {
 
+    @Resource
+    private ProveedorService proveedorService;
+
     @GetMapping("/index")
     public String get(Model model) {
 
-        model.addAttribute("proveedorList", ProveedorService.proveedorList);
+        model.addAttribute("proveedorList", proveedorService.buscarProveedorList());
 
         return "index";
     }

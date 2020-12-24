@@ -2,6 +2,7 @@ package edu.academik.telus.practice.one.controller.proveedor;
 
 import edu.academik.telus.practice.one.model.Proveedor;
 import edu.academik.telus.practice.one.service.ProveedorService;
+import javax.annotation.Resource;
 import javax.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +19,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 public class ProveedorController {
 
+    @Resource //@Inject
+    private ProveedorService proveedorService;
+
     @GetMapping("/proveedor")
     public String get(Model model) {
 
@@ -29,7 +33,7 @@ public class ProveedorController {
     @GetMapping("/proveedor/codigo/{codigo}")
     public String getByCodigo(Model model, @PathVariable("codigo") String codigo) {
 
-        var proveedor = ProveedorService.buscarProveedor(codigo);
+        var proveedor = proveedorService.buscarProveedor(codigo);
 
         model.addAttribute("proveedor", proveedor);
 
@@ -44,7 +48,7 @@ public class ProveedorController {
     ) {
         if (!bindingResult.hasErrors()) {
 
-            boolean agregado = ProveedorService.agregarProveedor(proveedor);
+            boolean agregado = proveedorService.agregarProveedor(proveedor);
 
             if (agregado) {
                 model.addAttribute("proveedor", new Proveedor());

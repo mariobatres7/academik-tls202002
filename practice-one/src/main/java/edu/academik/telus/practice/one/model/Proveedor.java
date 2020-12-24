@@ -29,6 +29,14 @@ public class Proveedor {
     private String email;
 
     private boolean eliminado;
+    
+    private boolean activo;
+
+    public Proveedor() {
+        this.activo = true;
+    }
+    
+    
 
     public String getCodigo() {
         return codigo;
